@@ -12,7 +12,7 @@ Add these lines to ``/etc/collectd/collectd.conf``::
       DataDir "/var/lib/collectd/rrd"
     </Plugin>
     <Plugin exec>
-      Exec nobody "/PLUGIN_PATH/zservertracelog.py" "/path/to/trace.log"
+      Exec nobody "/PLUGIN_PATH/zservertracelog.py" "/path/to/trace.log" "instance_name"
     </Plugin>
 
 Replace ``PLUGIN_PATH`` to path of this repository on server.

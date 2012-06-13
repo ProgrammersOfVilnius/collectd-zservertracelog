@@ -201,21 +201,28 @@ def reset_fields(values):
 
 
 def main():
-    parser = optparse.OptionParser()
+    """
+    This script is intended to be used as collectd plugin.
+    """
+    usage = "usage: %prog [options] TRACELOGFILE INSTANCENAME"
+    parser = optparse.OptionParser(usage, description=main.__doc__)
     parser.add_option("--no-seek",
                       dest="seek", action="store_false", default=True,
-                      help="read file from start, do not seek to end of file.")
+                      help="read file from start, do not seek to end of file")
     parser.add_option("--no-wait",
                       dest="wait", action="store_false", default=True,
                       help="do not wait for new lines in file")
-    parser.add_option("-i", "--interval",
+    parser.add_option("-i", "--interval", metavar="SECONDS",
                       dest="interval", action="store", default=60,
-                      help="read interval")
+                      help="read new lines by specified interval")
     parser.add_option("--hostname",
                       dest="hostname", action="store", default=os.uname()[1],
                       help="hostname")
 
     (options, args) = parser.parse_args()
+
+    if len(args) != 2:
+        parser.error("incorrect number of arguments")
 
     logfile = args[0]
     instance = args[1]
