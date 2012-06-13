@@ -8,10 +8,8 @@ import sys
 import time
 
 
-TRACE_LOG = ''
-VERBOSE_LOGGING = True
-
-
+# Code bellow are taken from zservertracelog/zc/tracereport.py
+# ------------------------8<----------------------------------
 def seconds_difference(dt1, dt2):
     delta = dt1 - dt2
     micros = float('0.' + str(delta.microseconds))
@@ -38,37 +36,6 @@ def parse_datetime(s):
         ms = '0'
     args = [int(arg) for arg in (date.split('-') + h_m_s.split(':') + [ms])]
     return datetime.datetime(*args)
-
-
-class Tail(object):
-    def __init__(self, filename, seek=True, wait=True, interval=60):
-        self.filename = filename
-        self.fh = None
-        self.fsize = os.path.getsize(filename)
-        self.seek = seek
-        self.wait = wait
-        self.interval = interval
-
-    def reopen(self):
-        fsize = os.path.getsize(self.filename)
-        if self.fh is None:
-            self.fh = open(self.filename)
-            if self.seek:
-                self.fh.seek(0, os.SEEK_END)
-        elif fsize < self.fsize:
-            # Seek to begining if file was truncated
-            self.fh.seek(0)
-        self.fsize = fsize
-
-    def readlines(self):
-        while True:
-            self.reopen()
-            line = self.fh.readline()
-            if not line:
-                sys.stdout.flush()
-                time.sleep(self.interval)
-                continue
-            yield line
 
 
 class Request(object):
@@ -106,6 +73,7 @@ class Request(object):
     @property
     def total_seconds(self):
         return seconds_difference(self.end, self.start)
+# ------------------------>8----------------------------------
 
 
 def readrequests(tail):
@@ -161,6 +129,37 @@ def readrequests(tail):
         # Unknow log line
         else:
             print 'WTF', line
+
+
+class Tail(object):
+    def __init__(self, filename, seek=True, wait=True, interval=60):
+        self.filename = filename
+        self.fh = None
+        self.fsize = os.path.getsize(filename)
+        self.seek = seek
+        self.wait = wait
+        self.interval = interval
+
+    def reopen(self):
+        fsize = os.path.getsize(self.filename)
+        if self.fh is None:
+            self.fh = open(self.filename)
+            if self.seek:
+                self.fh.seek(0, os.SEEK_END)
+        elif fsize < self.fsize:
+            # Seek to begining if file was truncated
+            self.fh.seek(0)
+        self.fsize = fsize
+
+    def readlines(self):
+        while True:
+            self.reopen()
+            line = self.fh.readline()
+            if not line:
+                sys.stdout.flush()
+                time.sleep(self.interval)
+                continue
+            yield line
 
 
 def timestamp(d):
