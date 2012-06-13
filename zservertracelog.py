@@ -212,7 +212,7 @@ def main():
                       dest="interval", action="store", default=60,
                       help="read interval")
     parser.add_option("--hostname",
-                      dest="hostname", action="store", default='localhost',
+                      dest="hostname", action="store", default=os.uname()[1],
                       help="hostname")
 
     (options, args) = parser.parse_args()
