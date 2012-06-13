@@ -221,7 +221,7 @@ def main():
         t = timestamp(request.start)
         last_timestamp = last_timestamp or t
         values = (request.total_seconds, request.app_seconds)
-        if t - last_timestamp >= 60:
+        if t - last_timestamp >= interval:
             putval(template, context, last_timestamp, fields, data)
             data = reset_fields(fields)
             last_timestamp = t
