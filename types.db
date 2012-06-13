@@ -1,0 +1,1 @@
+zoperequest  reqavg:GAUGE:0:U, reqmin:GAUGE:0:U, reqmax:GAUGE:0:U, appavg:GAUGE:0:U, appmin:GAUGE:0:U, appmax:GAUGE:0:U
