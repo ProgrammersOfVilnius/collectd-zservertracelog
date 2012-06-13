@@ -2,6 +2,7 @@
 
 import datetime
 import itertools
+import optparse
 import os
 import os.path
 import sys
@@ -197,9 +198,25 @@ def reset_fields(values):
 
 
 def main():
+    parser = optparse.OptionParser()
+    parser.add_option("-s", "--no-seek",
+                      dest="seek", action="store_false", default=False,
+                      help="read file from start, do not seek to end of file.")
+    parser.add_option("-w", "--no-wait",
+                      dest="wait", action="store_false", default=False,
+                      help="do not wait for new lines in file")
+    parser.add_option("-i", "--interval",
+                      dest="interval", action="store", default=60,
+                      help="read interval")
+
+    (options, args) = parser.parse_args()
+
+    logfile = sys.argv[1]
+    instance = sys.argv[2]
+
     template = ' '.join([
         'PUTVAL',
-        '%(hostname)s/%(plugin)s/%(type)s',
+        '%(hostname)s/%(plugin)s/%(type)s-%(instance)s',
         'interval=%(interval)d',
         '%(timestamp)d:%(value)s',
     ])
@@ -208,9 +225,9 @@ def main():
         interval=int(os.environ.get('COLLECTD_INTERVAL', 60)),
         plugin='zservertracelog',
         type='zoperequest',
+        instance=instance,
     )
 
-    logfile = sys.argv[1]
     interval = context['interval']
     tail = Tail(logfile, interval=interval)
     last_timestamp = None
