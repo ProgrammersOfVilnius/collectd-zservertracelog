@@ -157,8 +157,11 @@ class Tail(object):
             line = self.fh.readline()
             if not line:
                 sys.stdout.flush()
-                time.sleep(self.interval)
-                continue
+                if self.wait:
+                    time.sleep(self.interval)
+                    continue
+                else:
+                    break
             yield line
 
 
@@ -199,20 +202,23 @@ def reset_fields(values):
 
 def main():
     parser = optparse.OptionParser()
-    parser.add_option("-s", "--no-seek",
-                      dest="seek", action="store_false", default=False,
+    parser.add_option("--no-seek",
+                      dest="seek", action="store_false", default=True,
                       help="read file from start, do not seek to end of file.")
-    parser.add_option("-w", "--no-wait",
-                      dest="wait", action="store_false", default=False,
+    parser.add_option("--no-wait",
+                      dest="wait", action="store_false", default=True,
                       help="do not wait for new lines in file")
     parser.add_option("-i", "--interval",
                       dest="interval", action="store", default=60,
                       help="read interval")
+    parser.add_option("--hostname",
+                      dest="hostname", action="store", default='localhost',
+                      help="hostname")
 
     (options, args) = parser.parse_args()
 
-    logfile = sys.argv[1]
-    instance = sys.argv[2]
+    logfile = args[0]
+    instance = args[1]
 
     template = ' '.join([
         'PUTVAL',
@@ -221,15 +227,16 @@ def main():
         '%(timestamp)d:%(value)s',
     ])
     context = dict(
-        hostname=os.environ.get('COLLECTD_HOSTNAME', 'localhost'),
-        interval=int(os.environ.get('COLLECTD_INTERVAL', 60)),
+        hostname=os.environ.get('COLLECTD_HOSTNAME', options.hostname),
+        interval=int(os.environ.get('COLLECTD_INTERVAL', options.interval)),
         plugin='zservertracelog',
         type='zoperequest',
         instance=instance,
     )
 
     interval = context['interval']
-    tail = Tail(logfile, interval=interval)
+    tail = Tail(logfile, interval=interval, seek=options.seek,
+                wait=options.wait)
     last_timestamp = None
     fields = ('req', 'app')
     data = reset_fields(fields)
