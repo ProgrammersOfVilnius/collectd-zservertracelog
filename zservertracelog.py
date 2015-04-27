@@ -213,7 +213,7 @@ def main():
                       dest="wait", action="store_false", default=True,
                       help="do not wait for new lines in file")
     parser.add_option("-i", "--interval", metavar="SECONDS",
-                      dest="interval", action="store", default=60,
+                      dest="interval", action="store", default=10,
                       help="read new lines by specified interval")
     parser.add_option("--hostname",
                       dest="hostname", action="store", default=os.uname()[1],
