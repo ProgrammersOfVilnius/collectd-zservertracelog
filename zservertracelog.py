@@ -235,7 +235,7 @@ def main():
     ])
     context = dict(
         hostname=os.environ.get('COLLECTD_HOSTNAME', options.hostname),
-        interval=int(os.environ.get('COLLECTD_INTERVAL', options.interval)),
+        interval=float(os.environ.get('COLLECTD_INTERVAL', options.interval)),
         plugin='zservertracelog',
         type='zoperequest',
         instance=instance,
