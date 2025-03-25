@@ -1,6 +1,13 @@
 Configureation
 ==============
 
+This is a collectd plugin that tails a Zope 3 trace.log file and records
+request processing durations (both total times and times spent in application
+code).
+
+It is not very useful.
+
+
 Setup collectd
 --------------
 

@@ -1,10 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import datetime
 import itertools
 import optparse
 import os
-import os.path
 import sys
 import time
 
@@ -103,7 +102,7 @@ def readrequests(tail):
 
         # Database activity
         elif typ == 'D':
-            pass # ignore db stats for now
+            pass  # ignore db stats for now
 
         # Application done
         elif typ == 'A':
@@ -128,7 +127,7 @@ def readrequests(tail):
 
         # Unknow log line
         else:
-            print 'WTF', line
+            print('WTF: %s' % line)
 
 
 class Tail(object):
