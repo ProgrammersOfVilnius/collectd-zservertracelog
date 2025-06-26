@@ -170,7 +170,7 @@ def timestamp(d):
 
 def putval(template, context, t, fields, data):
     values = []
-    for name, item in itertools.izip_longest(fields, data):
+    for name, item in itertools.zip_longest(fields, data):
         cnt, sum_, min_, max_ = item
         avg = sum_ / cnt
         values.append('%f:%f:%f' % (avg, min_, max_))
@@ -180,7 +180,7 @@ def putval(template, context, t, fields, data):
 
 def update_fields(values, data):
     new = []
-    for value, item in itertools.izip_longest(values, data):
+    for value, item in itertools.zip_longest(values, data):
         cnt, sum_, min_, max_ = item
         new.append((
             cnt + 1,
